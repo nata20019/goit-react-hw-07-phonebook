@@ -2,8 +2,19 @@ import Section from './Section/Section';
 import ContactForm from './ContactForm/ContactForm';
 import ContactsSearch from './ContactsSearch';
 import ContactsList from './ContactsList';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchContacts } from '../redux/operations';
+import { Loader } from './Loader/Loader';
 
 export const App = () => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(state => state.contactsBook.isLoading);
+  const isError = useSelector(state => state.contactsBook.isError);
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
   return (
     <div
       style={{
@@ -19,6 +30,8 @@ export const App = () => {
       <Section title="Phonebook">
         <ContactForm />
       </Section>
+      {isLoading && <Loader />}
+      {isError && <p>Error loading contacts. Please try again later.</p>}
       <Section title="Contacts">
         <ContactsSearch />
         <ContactsList />
